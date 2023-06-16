@@ -13,6 +13,7 @@
   "dependencies": {
     "@grammyjs/conversations": "^1.1.1",
     "@grammyjs/storage-file": "^2.3.0",
+    "axios": "^1.4.0",
     "dotenv": "^16.0.3",
     "grammy": "^1.16.1",
     "nodemon": "^2.0.22",
