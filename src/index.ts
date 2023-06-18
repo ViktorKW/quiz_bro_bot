@@ -9,10 +9,12 @@ import { Category, CategoryOption, IUser } from "./model/IUser"
 import { FileAdapter } from "@grammyjs/storage-file"
 import { chooseCategoryConversation } from "./conversations/chooseCategoryConversation"
 import { generateNewSessionToken } from "./api/generateNewSessionToken"
+import { Menu } from "@grammyjs/menu"
 import retrieveCategories from "./api/retrieveCategories"
 
 async function main() {
     const bot = new Bot<MyContext>(BOT_TOKEN)
+    const menu = createMenu()
 
     bot.use(
         session({
@@ -25,13 +27,19 @@ async function main() {
             }),
         })
     )
-
+    
+    bot.use(menu)
     bot.use(conversations())
     bot.use(createConversation(chooseCategoryConversation))
 
     bot.command("start", async (ctx)=>{
         await initializeBot(ctx)
-        await ctx.conversation.enter("chooseCategoryConversation")
+        await ctx.reply("Settings:", { reply_markup: menu })
+        // await ctx.conversation.enter("chooseCategoryConversation")
+    })
+
+    bot.command("settings", async(ctx)=>{
+        await ctx.reply("Settings:", { reply_markup: menu })
     })
 
     bot.catch(err=>console.error(err))
@@ -56,6 +64,23 @@ async function initializeBot(ctx:MyContext) {
 
         ctx.session.categories = category_items
     }
+}
+
+function createMenu():Menu<MyContext>{
+    const menu = new Menu<MyContext>("categories_settings")
+    
+    menu.dynamic((ctx, range)=>{
+        for(const category of ctx.session.categories){
+            range
+                .text(`${category.name} ${category.checked ? "✅" : "❌"}`, (ctx)=>{
+                    category.checked = !category.checked
+                    ctx.menu.update()
+                })
+                .row()
+        }
+    })
+
+    return menu
 }
 
 main()
