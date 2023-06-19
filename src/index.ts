@@ -7,7 +7,7 @@ import {
 import { MyContext } from "./model/myContext"
 import { Category, CategoryOption, IUser } from "./model/IUser"
 import { FileAdapter } from "@grammyjs/storage-file"
-import { chooseCategoryConversation } from "./conversations/chooseCategoryConversation"
+import { quizConversation } from "./conversations/quizConversation"
 import { generateNewSessionToken } from "./api/generateNewSessionToken"
 import { Menu } from "@grammyjs/menu"
 import retrieveCategories from "./api/retrieveCategories"
@@ -30,12 +30,12 @@ async function main() {
     
     bot.use(menu)
     bot.use(conversations())
-    bot.use(createConversation(chooseCategoryConversation))
+    bot.use(createConversation(quizConversation))
 
     bot.command("start", async (ctx)=>{
         await initializeBot(ctx)
         await ctx.reply("Settings:", { reply_markup: menu })
-        // await ctx.conversation.enter("chooseCategoryConversation")
+        await ctx.conversation.enter("quizConversation")
     })
 
     bot.command("settings", async(ctx)=>{

@@ -14,9 +14,11 @@
     "@grammyjs/conversations": "^1.1.1",
     "@grammyjs/menu": "^1.2.1",
     "@grammyjs/storage-file": "^2.3.0",
+    "@types/he": "^1.2.0",
     "axios": "^1.4.0",
     "dotenv": "^16.0.3",
     "grammy": "^1.16.1",
+    "he": "^1.2.0",
     "nodemon": "^2.0.22",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
