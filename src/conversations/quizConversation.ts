@@ -5,9 +5,10 @@ import { Keyboard } from "grammy"
 
 export async function quizConversation(conversation: MyConversation, ctx: MyContext){
     const chosen_category = selectRandomCategory(ctx.session.categories)
-    const question:Question = await getQuestion(ctx, chosen_category.id)
+    const question:Question = await conversation.external(async ()=>await getQuestion(ctx, chosen_category.id)) 
+
     if(question){
-        console.log(question)
+        conversation.log(question)
         const question_keyboard = createQuestionKeyboard(ctx, question)
 
         await ctx.reply(question.question, {
@@ -23,7 +24,7 @@ export async function quizConversation(conversation: MyConversation, ctx: MyCont
         }
 
     } else {
-        console.log("Question not found")
+        conversation.log("Question not found")
     }
 }   
 
