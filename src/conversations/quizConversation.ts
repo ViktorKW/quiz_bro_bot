@@ -8,7 +8,6 @@ export async function quizConversation(conversation: MyConversation, ctx: MyCont
     const question:Question = await conversation.external(async ()=>await getQuestion(ctx, chosen_category.id)) 
 
     if(question){
-        conversation.log(question)
         const question_keyboard = createQuestionKeyboard(ctx, question)
 
         await ctx.reply(question.question, {
@@ -17,19 +16,23 @@ export async function quizConversation(conversation: MyConversation, ctx: MyCont
 
         const { message } = await conversation.waitFor("msg:text")
 
-        if(message?.text?.toLocaleLowerCase() === question.correct_answer.toLocaleLowerCase()){
-            await ctx.reply("You're correct!")
-        } else {
-            await ctx.reply(`You're wrong! Correct answer is ${question.correct_answer}`)
-        }
+        const is_correct = message?.text?.toLowerCase() === question.correct_answer.toLowerCase()
+        const reply_message = is_correct
+            ? "You're correct!"
+            : `You're wrong! Correct answer is ${question.correct_answer}`
 
+        await ctx.reply(reply_message, { 
+            reply_markup: {
+                remove_keyboard: true
+            }
+        })
     } else {
         conversation.log("Question not found")
     }
 }   
 
 function shuffleArray<T>(array: T[]): T[] {
-    const shuffledArray = [...array] // Create a copy of the original array
+    const shuffledArray = [...array]
   
     for (let i = shuffledArray.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
