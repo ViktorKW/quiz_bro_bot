@@ -16,6 +16,6 @@ export default async function retrieveCategories():Promise<Category[]>{
         }
     } catch(err){
         console.log(err)
-        return []
+        return Promise.reject()
     }
 }

@@ -15,6 +15,6 @@ export async function resetSessionToken(token:string):Promise<string> {
         }
     } catch(err){
         console.log(err)
-        return ""
+        return Promise.reject()
     }
 }
