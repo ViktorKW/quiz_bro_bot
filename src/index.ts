@@ -1,4 +1,4 @@
-import { Bot, session } from "grammy"
+import { Bot, Context, InlineKeyboard, Keyboard, session } from "grammy"
 import { BOT_TOKEN } from "./config"
 import {
     conversations,
@@ -14,7 +14,16 @@ import retrieveCategories from "./api/retrieveCategories"
 
 async function main() {
     const bot = new Bot<MyContext>(BOT_TOKEN)
-    const menu = createMenu()
+    const settings_menu = createSettingsMenu()
+    const settings_reply_message = `Category Settings 🛠
+    
+✅ Categories: These categories will be included in your quiz queue.
+❌ Categories: These categories will not appear in your quiz.
+If no categories are selected, you will receive random questions from all available categories.
+
+You can customize your quiz experience by selecting the categories that interest you.`
+
+    const navigation_menu = createNavigationMenu(settings_menu, settings_reply_message)
 
     bot.use(
         session({
@@ -28,18 +37,25 @@ async function main() {
         })
     )
     
-    bot.use(menu)
+    bot.use(settings_menu)
     bot.use(conversations())
     bot.use(createConversation(quizConversation))
+    bot.use(navigation_menu)
 
     bot.command("start", async (ctx)=>{
         await initializeBot(ctx)
-        await ctx.reply("Settings:", { reply_markup: menu })
+
+        await ctx.reply("Welcome to @quiz_bro_bot! This bot is designed to provide an engaging quiz experience. It retrieves random questions from the OpenTriviaDatabase, offering a variety of categories for you to choose from. Get ready to test your knowledge and have fun!\n\nFor more information about the OpenTriviaDatabase, visit their website at: https://opentdb.com.", {
+            reply_markup: navigation_menu
+        })
+    })
+
+    bot.command("quiz", async (ctx)=>{
         await ctx.conversation.enter("quizConversation")
     })
 
     bot.command("settings", async(ctx)=>{
-        await ctx.reply("Settings:", { reply_markup: menu })
+        await ctx.reply(settings_reply_message, { reply_markup: settings_menu })
     })
 
     bot.catch(err=>console.error(err))
@@ -66,11 +82,15 @@ async function initializeBot(ctx:MyContext) {
     }
 }
 
-function createMenu():Menu<MyContext>{
+function createSettingsMenu():Menu<MyContext>{
     const menu = new Menu<MyContext>("categories_settings")
     
     menu.dynamic((ctx, range)=>{
-        for(const category of ctx.session.categories){
+        const valid_categories = ctx.session.categories.filter((item)=>{
+            return item.name !== "General Knowledge"
+        })
+
+        for(const category of valid_categories){
             range
                 .text(`${category.name} ${category.checked ? "✅" : "❌"}`, (ctx)=>{
                     category.checked = !category.checked
@@ -79,6 +99,18 @@ function createMenu():Menu<MyContext>{
                 .row()
         }
     })
+
+    return menu
+}
+
+function createNavigationMenu(settings_menu:Menu<MyContext>, settings_reply_message:string):Menu<MyContext>{
+    const menu = new Menu<MyContext>("navigation")
+        .text("Start quizzing through 🏄‍♂️", async (ctx)=>{
+            await ctx.conversation.enter("quizConversation")
+        })
+        .text("Category Settings 🛠", async (ctx)=>{
+            await ctx.reply(settings_reply_message, { reply_markup: settings_menu })
+        })
 
     return menu
 }
