@@ -6,9 +6,9 @@ export async function resetSessionToken(token:string):Promise<string> {
     try{
         const resp = await axios.get(URL)
         const data = resp.data
-        
+
         if(data?.response_code === 0){
-            console.log(data?.response_message)
+            console.log("Token was reset: ", data?.token)
             return data?.token
         } else{
             throw "resetSessionToken failed to reset token"

@@ -1,7 +1,7 @@
 import axios from "axios"
 import { MyContext } from "../model/myContext"
-import { resetSessionToken } from "./resetSessionToken"
 import he from "he"
+import { manageToken } from "./manageToken"
 
 export type Question = {
     category:string,
@@ -18,13 +18,15 @@ export async function getQuestion(ctx:MyContext, category_id:number):Promise<Que
     const resp = await axios.get(URL)
     const data = resp.data
 
+    console.log("question data: ", data)
+
     try{
         if(data?.response_code === 0){
             const first_question_element:Question = decodeQuestion(data?.results[0])
             return first_question_element
         } else if(data?.response_code === 3){
-            console.log("Token is too old, resetting")
-            const new_token = await resetSessionToken(ctx.session.token)
+            console.log("Token is too old!")
+            const new_token = await manageToken(ctx.session.token)
             ctx.session.token = new_token
             
             return await getQuestion(ctx, category_id)
