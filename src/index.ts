@@ -1,4 +1,4 @@
-import { Bot, Context, InlineKeyboard, Keyboard, session } from "grammy"
+import { Bot, session } from "grammy"
 import { BOT_TOKEN } from "./config"
 import {
     conversations,
@@ -9,22 +9,13 @@ import { Category, CategoryOption, IUser } from "./model/IUser"
 import { FileAdapter } from "@grammyjs/storage-file"
 import { quizConversation } from "./conversations/quizConversation"
 import { generateNewSessionToken } from "./api/generateNewSessionToken"
-import { Menu } from "@grammyjs/menu"
 import retrieveCategories from "./api/retrieveCategories"
+import { settings_menu, navigation_menu, i_am_ready_menu } from "./model/menus"
+import { settings_reply_message, welcome_message } from "./model/texts"
 
 async function main() {
     const bot = new Bot<MyContext>(BOT_TOKEN)
-    const settings_menu = createSettingsMenu()
-    const settings_reply_message = `Category Settings 🛠
     
-✅ Categories: These categories will be included in your quiz queue.
-❌ Categories: These categories will not appear in your quiz.
-If no categories are selected, you will receive random questions from all available categories.
-
-You can customize your quiz experience by selecting the categories that interest you.`
-
-    const navigation_menu = createNavigationMenu(settings_menu, settings_reply_message)
-
     bot.use(
         session({
             initial: () => ({ 
@@ -41,11 +32,12 @@ You can customize your quiz experience by selecting the categories that interest
     bot.use(conversations())
     bot.use(createConversation(quizConversation))
     bot.use(navigation_menu)
+    bot.use(i_am_ready_menu)
 
     bot.command("start", async (ctx)=>{
         await initializeBot(ctx)
 
-        await ctx.reply("Welcome to @quiz_bro_bot! This bot is designed to provide an engaging quiz experience. It retrieves random questions from the OpenTriviaDatabase, offering a variety of categories for you to choose from. Get ready to test your knowledge and have fun!\n\nFor more information about the OpenTriviaDatabase, visit their website at: https://opentdb.com.", {
+        await ctx.reply(welcome_message, {
             reply_markup: navigation_menu
         })
     })
@@ -56,6 +48,7 @@ You can customize your quiz experience by selecting the categories that interest
 
     bot.command("settings", async(ctx)=>{
         await ctx.reply(settings_reply_message, { reply_markup: settings_menu })
+        await ctx.reply("Press here when you're ready", {reply_markup: i_am_ready_menu})
     })
 
     bot.catch(err=>console.error(err))
@@ -80,39 +73,6 @@ async function initializeBot(ctx:MyContext) {
 
         ctx.session.categories = category_items
     }
-}
-
-function createSettingsMenu():Menu<MyContext>{
-    const menu = new Menu<MyContext>("categories_settings")
-    
-    menu.dynamic((ctx, range)=>{
-        const valid_categories = ctx.session.categories.filter((item)=>{
-            return item.name !== "General Knowledge"
-        })
-
-        for(const category of valid_categories){
-            range
-                .text(`${category.name} ${category.checked ? "✅" : "❌"}`, (ctx)=>{
-                    category.checked = !category.checked
-                    ctx.menu.update()
-                })
-                .row()
-        }
-    })
-
-    return menu
-}
-
-function createNavigationMenu(settings_menu:Menu<MyContext>, settings_reply_message:string):Menu<MyContext>{
-    const menu = new Menu<MyContext>("navigation")
-        .text("Start quizzing through 🏄‍♂️", async (ctx)=>{
-            await ctx.conversation.enter("quizConversation")
-        })
-        .text("Category Settings 🛠", async (ctx)=>{
-            await ctx.reply(settings_reply_message, { reply_markup: settings_menu })
-        })
-
-    return menu
 }
 
 main()
