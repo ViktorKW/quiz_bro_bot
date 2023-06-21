@@ -1,4 +1,4 @@
-import { Bot, session } from "grammy"
+import { Bot, Keyboard, session } from "grammy"
 import { BOT_TOKEN } from "./config"
 import {
     conversations,
@@ -10,8 +10,9 @@ import { FileAdapter } from "@grammyjs/storage-file"
 import { quizConversation } from "./conversations/quizConversation"
 import { generateNewSessionToken } from "./api/generateNewSessionToken"
 import retrieveCategories from "./api/retrieveCategories"
-import { settings_menu, navigation_menu, i_am_ready_menu } from "./model/menus"
-import { settings_reply_message, welcome_message } from "./model/texts"
+import { settings_menu } from "./model/menus"
+import { start_quiz_text, next_question_text, settings_text, welcome_message } from "./model/texts"
+import { settingsCallback } from "./model/callbacks"
 
 async function main() {
     const bot = new Bot<MyContext>(BOT_TOKEN)
@@ -31,14 +32,16 @@ async function main() {
     bot.use(settings_menu)
     bot.use(conversations())
     bot.use(createConversation(quizConversation))
-    bot.use(navigation_menu)
-    bot.use(i_am_ready_menu)
 
     bot.command("start", async (ctx)=>{
         await initializeBot(ctx)
 
+        const keyboard = new Keyboard().persistent().oneTime()
+            .text(start_quiz_text)
+            .text(settings_text)
+
         await ctx.reply(welcome_message, {
-            reply_markup: navigation_menu
+            reply_markup: keyboard
         })
     })
 
@@ -47,8 +50,15 @@ async function main() {
     })
 
     bot.command("settings", async(ctx)=>{
-        await ctx.reply(settings_reply_message, { reply_markup: settings_menu })
-        await ctx.reply("Press here when you're ready", {reply_markup: i_am_ready_menu})
+        await settingsCallback(ctx)
+    })
+
+    bot.hears([start_quiz_text, next_question_text, ], async (ctx)=>{
+        await ctx.conversation.enter("quizConversation")
+    })
+
+    bot.hears([settings_text], async (ctx)=>{
+        await settingsCallback(ctx)
     })
 
     bot.catch(err=>console.error(err))

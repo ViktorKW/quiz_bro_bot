@@ -2,6 +2,7 @@ import { Question, getQuestion } from "../api/getQuestion"
 import { CategoryOption } from "../model/IUser"
 import { MyConversation, MyContext } from "../model/myContext"
 import { Keyboard } from "grammy"
+import { next_question_text } from "../model/texts"
 
 export async function quizConversation(conversation: MyConversation, ctx: MyContext){
     const chosen_category = selectRandomCategory(ctx.session.categories)
@@ -10,21 +11,23 @@ export async function quizConversation(conversation: MyConversation, ctx: MyCont
     if(question){
         const question_keyboard = createQuestionKeyboard(ctx, question)
 
-        await ctx.reply(question.question, {
+        await ctx.reply(`❓ ${question.question}`, {
             reply_markup: question_keyboard
         })
 
-        const { message } = await conversation.waitFor("msg:text")
+        const { message } = await conversation.waitForHears([question.correct_answer, ...question.incorrect_answers])
 
         const is_correct = message?.text?.toLowerCase() === question.correct_answer.toLowerCase()
         const reply_message = is_correct
-            ? "You're correct!"
-            : `You're wrong! Correct answer is ${question.correct_answer}`
+            ? "✅ You're correct!"
+            : `❌ You're wrong! Correct answer is ${question.correct_answer}`
+
+
+        const keyboard = new Keyboard().persistent().oneTime()
+            .text(next_question_text)
 
         await ctx.reply(reply_message, { 
-            reply_markup: {
-                remove_keyboard: true
-            }
+            reply_markup: keyboard
         })
     } else {
         conversation.log("Question not found")
