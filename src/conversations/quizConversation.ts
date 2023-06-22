@@ -3,7 +3,7 @@ import { CategoryOption } from "../model/IUser"
 import { MyConversation, MyContext } from "../model/myContext"
 import { Keyboard } from "grammy"
 import { next_question_text } from "../model/texts"
-import { generateNewSessionToken } from "../api/generateNewSessionToken"
+import { initializeBot } from "../initializeBot"
 
 export async function quizConversation(conversation: MyConversation, ctx: MyContext){
     const {token, categories} = conversation.session
@@ -27,9 +27,11 @@ export async function quizConversation(conversation: MyConversation, ctx: MyCont
             ? "✅ You're correct!"
             : `❌ You're wrong! Correct answer is ${question.correct_answer}`
             
-        is_correct
-            ? conversation.session.categories[chosen_category_index].correct_answers_number++
-            : conversation.session.categories[chosen_category_index].incorrect_answers_number++
+        if (is_correct === true){
+            conversation.session.categories[chosen_category_index].correct_answers_number++
+        } else if(is_correct === false){
+            conversation.session.categories[chosen_category_index].incorrect_answers_number++
+        }
 
         const keyboard = new Keyboard().persistent().oneTime()
             .text(next_question_text)
@@ -43,7 +45,7 @@ export async function quizConversation(conversation: MyConversation, ctx: MyCont
         conversation.log("Invalid Parameter Contains an invalid parameter. Arguements passed in aren't valid. (Ex. Amount = Five)")
     } else if(response_code === 3){
         conversation.log("Code 3: Token Not Found Session Token does not exist.")
-        conversation.session.token = await conversation.external(async ()=> await generateNewSessionToken())
+        await conversation.external(async ()=>{ await initializeBot(ctx)} )
         await quizConversation(conversation, ctx)
     } else if(response_code === 4){
         conversation.log("Token Empty Session Token has returned all possible questions for the specified query. Resetting the Token is necessary.")
