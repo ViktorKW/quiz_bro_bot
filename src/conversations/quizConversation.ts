@@ -1,4 +1,4 @@
-import { Question, getQuestion } from "../api/getQuestion"
+import { Question, decodeQuestion, getQuestion } from "../api/getQuestion"
 import { CategoryOption } from "../model/IUser"
 import { MyConversation, MyContext } from "../model/myContext"
 import { Keyboard } from "grammy"
@@ -7,12 +7,13 @@ import { generateNewSessionToken } from "../api/generateNewSessionToken"
 
 export async function quizConversation(conversation: MyConversation, ctx: MyContext){
     const {token, categories} = conversation.session
-    const chosen_category = selectRandomCategory(categories)
+    const chosen_category_index = selectRandomCategoryIndex(categories)
 
-    const {response_code, results} = await conversation.external(async ()=>await getQuestion(token, chosen_category.id)) 
+    const {response_code, results} = await conversation.external(async ()=>await getQuestion(token, categories[chosen_category_index].id)) 
 
     if(response_code === 0 && results.length > 0){
-        const question:Question = results[0]
+        const encoded_question:Question = results[0]
+        const question = decodeQuestion(encoded_question)
         const question_keyboard = createQuestionKeyboard(question)
 
         await ctx.reply(`❓ ${question.question}`, {
@@ -25,7 +26,11 @@ export async function quizConversation(conversation: MyConversation, ctx: MyCont
         const reply_message = is_correct
             ? "✅ You're correct!"
             : `❌ You're wrong! Correct answer is ${question.correct_answer}`
-        
+            
+        is_correct
+            ? conversation.session.categories[chosen_category_index].correct_answers_number++
+            : conversation.session.categories[chosen_category_index].incorrect_answers_number++
+
         const keyboard = new Keyboard().persistent().oneTime()
             .text(next_question_text)
         
@@ -78,19 +83,19 @@ function createQuestionKeyboard(question:Question):Keyboard{
     }
 }
 
-function selectRandomCategory(categories:CategoryOption[]):CategoryOption{
+function selectRandomCategoryIndex(categories:CategoryOption[]):number{
     const chosen_category_options = categories.filter((item)=>{
         return item.checked === true
     })
 
     if(chosen_category_options.length > 0){
-        return getRandomArrayElement(chosen_category_options)
+        const random_index = getRandomArrayIndex(chosen_category_options)
+        return categories.indexOf(chosen_category_options[random_index])
     } else{
-        return getRandomArrayElement(categories)
+        return getRandomArrayIndex(categories)
     }
 }
 
-function getRandomArrayElement<T>(array:T[]):T{
-    const random_index = Math.floor(Math.random()*array.length)
-    return array[random_index]
+function getRandomArrayIndex<T>(array:T[]):number{
+    return Math.floor(Math.random()*array.length)
 }

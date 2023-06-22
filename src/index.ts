@@ -85,6 +85,8 @@ async function initializeBot(ctx:MyContext) {
                 checked: false,
                 ...item,
                 total_questions: total_num_of_verified_questions,
+                correct_answers_number: 0,
+                incorrect_answers_number: 0
             }
         })
 

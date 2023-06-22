@@ -8,6 +8,8 @@ export type CategoryOption = {
     name: string,
     checked: boolean,
     total_questions: number,
+    correct_answers_number: number,
+    incorrect_answers_number: number
 }
 
 export interface IUser{
