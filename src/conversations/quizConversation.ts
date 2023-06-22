@@ -20,25 +20,30 @@ export async function quizConversation(conversation: MyConversation, ctx: MyCont
             reply_markup: question_keyboard
         })
                 
-        const { message } = await conversation.waitForHears([question.correct_answer, ...question.incorrect_answers])
-        
-        const is_correct = message?.text?.toLowerCase() === question.correct_answer.toLowerCase()
-        const reply_message = is_correct
-            ? "✅ You're correct!"
-            : `❌ You're wrong! Correct answer is ${question.correct_answer}`
-            
-        if (is_correct === true){
-            conversation.session.categories[chosen_category_index].correct_answers_number++
-        } else if(is_correct === false){
-            conversation.session.categories[chosen_category_index].incorrect_answers_number++
-        }
+        const { message } = await conversation.waitFor(":text")
+        const all_question_choices = [question.correct_answer, ...question.incorrect_answers]
 
-        const keyboard = new Keyboard().persistent().oneTime()
-            .text(next_question_text)
+        if(message?.text && all_question_choices.includes(message.text)){
+            const is_correct = message?.text?.toLowerCase() === question.correct_answer.toLowerCase()
+            const reply_message = is_correct
+                ? "✅ You're correct!"
+                : `❌ You're wrong! Correct answer is ${question.correct_answer}`
+            
+            if (is_correct === true){
+                conversation.session.categories[chosen_category_index].correct_answers_number++
+            } else if(is_correct === false){
+                conversation.session.categories[chosen_category_index].incorrect_answers_number++
+            }
+
+            const keyboard = new Keyboard().persistent().oneTime()
+                .text(next_question_text)
         
-        await ctx.reply(reply_message, { 
-            reply_markup: keyboard
-        })
+            await ctx.reply(reply_message, { 
+                reply_markup: keyboard
+            })
+        } else{
+            conversation.log("Not a valid answer. Skip")
+        }
     } else if(response_code === 1){
         conversation.log("Could not return results. The API doesn't have enough questions for your query. (Ex. Asking for 50 Questions in a Category that only has 20.)")
     } else if(response_code === 2){
