@@ -9,7 +9,7 @@ function createSettingsMenu():Menu<MyContext>{
     menu.dynamic((ctx, range)=>{
         for(const category of ctx.session.categories){
             range
-                .text(`${category.name} ${category.checked ? "✅" : "❌"}`, (ctx)=>{
+                .text(`${category.name} (${category.total_questions}) ${category.checked ? "✅" : "❌"}`, (ctx)=>{
                     category.checked = !category.checked
                     ctx.menu.update()
                 })

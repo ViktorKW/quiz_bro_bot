@@ -4,9 +4,10 @@ export type Category = {
 }
 
 export type CategoryOption = {
-    checked: boolean,
     id: number,
-    name: string
+    name: string,
+    checked: boolean,
+    total_questions: number,
 }
 
 export interface IUser{

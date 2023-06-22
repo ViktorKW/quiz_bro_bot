@@ -13,6 +13,7 @@ import retrieveCategories from "./api/retrieveCategories"
 import { settings_menu } from "./model/menus"
 import { start_quiz_text, next_question_text, settings_text, welcome_message } from "./model/texts"
 import { settingsCallback } from "./model/callbacks"
+import { getCategoryQuestionCountById, getGlobalQuestionCount } from "./api/getGlobalQuestionCount"
 
 async function main() {
     const bot = new Bot<MyContext>(BOT_TOKEN)
@@ -74,10 +75,16 @@ async function initializeBot(ctx:MyContext) {
 
     if(ctx.session.categories.length === 0){
         const categories:Category[] = await retrieveCategories()
+        const global_question_count = await getGlobalQuestionCount()
+        
+
         const category_items:CategoryOption[] = categories.map((item)=>{
+            const { total_num_of_questions } = getCategoryQuestionCountById(global_question_count, item.id)
+
             return {
                 checked: false,
-                ...item
+                ...item,
+                total_questions: total_num_of_questions,
             }
         })
 
