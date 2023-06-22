@@ -79,12 +79,12 @@ async function initializeBot(ctx:MyContext) {
         
 
         const category_items:CategoryOption[] = categories.map((item)=>{
-            const { total_num_of_questions } = getCategoryQuestionCountById(global_question_count, item.id)
+            const { total_num_of_verified_questions } = getCategoryQuestionCountById(global_question_count, item.id)
 
             return {
                 checked: false,
                 ...item,
-                total_questions: total_num_of_questions,
+                total_questions: total_num_of_verified_questions,
             }
         })
 
