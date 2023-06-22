@@ -11,3 +11,4 @@ export const welcome_message = "Welcome to @quiz_bro_bot! This bot is designed t
 export const start_quiz_text = "Start quizzing through 🏄‍♂️"
 export const next_question_text = "Next question 🏄‍♂️"
 export const settings_text = "Category Settings 🛠"
+export const show_stats_text = "Show stats 🌴"

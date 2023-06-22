@@ -2,7 +2,7 @@ import { Question, decodeQuestion, getQuestion } from "../api/getQuestion"
 import { CategoryOption } from "../model/IUser"
 import { MyConversation, MyContext } from "../model/myContext"
 import { Keyboard } from "grammy"
-import { next_question_text } from "../model/texts"
+import { next_question_text, settings_text, show_stats_text } from "../model/texts"
 import { initializeBot } from "../initializeBot"
 
 export async function quizConversation(conversation: MyConversation, ctx: MyContext){
@@ -36,7 +36,8 @@ export async function quizConversation(conversation: MyConversation, ctx: MyCont
             }
 
             const keyboard = new Keyboard().persistent().oneTime()
-                .text(next_question_text)
+                .text(next_question_text).row()
+                .text(settings_text).text(show_stats_text)
         
             await ctx.reply(reply_message, { 
                 reply_markup: keyboard
@@ -54,6 +55,10 @@ export async function quizConversation(conversation: MyConversation, ctx: MyCont
         await quizConversation(conversation, ctx)
     } else if(response_code === 4){
         conversation.log("Token Empty Session Token has returned all possible questions for the specified query. Resetting the Token is necessary.")
+
+        await ctx.reply(`You've answered all questions from ${categories[chosen_category_index].name} category. I'll remove it from the queue.`)
+
+        conversation.session.categories[chosen_category_index].checked = false
     } else {
         conversation.log("Question not found")
     }

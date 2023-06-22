@@ -9,8 +9,8 @@ import { IUser } from "./model/IUser"
 import { FileAdapter } from "@grammyjs/storage-file"
 import { quizConversation } from "./conversations/quizConversation"
 import { settings_menu } from "./model/menus"
-import { start_quiz_text, next_question_text, settings_text, welcome_message } from "./model/texts"
-import { settingsCallback } from "./model/callbacks"
+import { start_quiz_text, next_question_text, settings_text, welcome_message, show_stats_text } from "./model/texts"
+import { settingsCallback, showStatsCallback } from "./model/callbacks"
 import { initializeBot } from "./initializeBot"
 
 async function main() {
@@ -52,12 +52,16 @@ async function main() {
         await settingsCallback(ctx)
     })
 
-    bot.hears([start_quiz_text, next_question_text, ], async (ctx)=>{
+    bot.hears([start_quiz_text, next_question_text], async (ctx)=>{
         await ctx.conversation.enter("quizConversation")
     })
 
-    bot.hears([settings_text], async (ctx)=>{
+    bot.hears(settings_text, async (ctx)=>{
         await settingsCallback(ctx)
+    })
+
+    bot.hears(show_stats_text, async(ctx)=>{
+        await showStatsCallback(ctx)
     })
 
     bot.catch(err=>console.error(err))
