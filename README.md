@@ -1,3 +1,5 @@
+!["Show case gif"](./assets/showcase.gif)
+
 # Telegram Quiz Bot
 
 quiz_bro_bot is a Telegram quiz bot that provides an interactive quiz experience by retrieving random questions from the OpenTriviaDatabase. The bot offers a wide range of categories for users to choose from, making it an engaging platform for testing their knowledge and having fun.
