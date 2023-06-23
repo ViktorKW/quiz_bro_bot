@@ -1,7 +1,7 @@
 # Telegram Quiz Bot
 !["Show case gif"](./assets/showcase.gif)
 
-Telegram Quiz Bot is a Telegram quiz bot that provides an interactive quiz experience by retrieving random questions from the OpenTriviaDatabase. The bot offers a wide range of categories for users to choose from, making it an engaging platform for testing their knowledge and having fun.
+Telegram Quiz Bot is a Telegram quiz bot that provides an interactive quiz experience by retrieving questions from the OpenTriviaDatabase. The bot offers a wide range of categories for users to choose from.
 
 ## Bot Commands
 
@@ -14,6 +14,7 @@ Telegram Quiz Bot is a Telegram quiz bot that provides an interactive quiz exper
 
 - Node.js
 - TypeScript
+- [OpenTriviaDatabase](https://opentdb.com/)
 - [Grammy](https://github.com/grammyjs/grammY) (Telegram Bot Framework)
 
 ## Bot Token Setup
