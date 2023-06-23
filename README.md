@@ -18,20 +18,22 @@ quiz_bro_bot is a Telegram quiz bot that provides an interactive quiz experience
 ## Bot Token Setup
 To run the bot, you need to set up your Telegram bot token. There are two options for setting the token: using an .env file or directly in the source code.
 
-# Option 1: Setting in the .env File
-Create a new file named .env in the root directory of your project.
-
+### Option 1: Setting in the .env File
+- Create a new file named .env in the root directory of your project.
 - Add the following line to the .env file:
-**BOT_TOKEN=your_bot_token_here**
 
-Replace your_bot_token_here with the actual token for your Telegram bot.
+  BOT_TOKEN=your_bot_token_here
 
-# Option 2: Setting in the Source Code
+- Replace your_bot_token_here with the actual token for your Telegram bot.
+
+### Option 2: Setting in the Source Code
 Alternatively, you can directly set the BOT_TOKEN in the source code of your src/index.ts file.
 
 - Locate the src/index.ts file.
 - Find the line that initializes the bot:
-  `const bot = new Bot<MyContext>(BOT_TOKEN);`
+
+  const bot = new Bot<MyContext>(BOT_TOKEN);
+  
 - Replace BOT_TOKEN with your actual bot token.
 
 ## Installation and Usage
