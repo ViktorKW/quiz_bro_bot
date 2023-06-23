@@ -1,11 +1,11 @@
 # Telegram Quiz Bot
 !["Show case gif"](./assets/showcase.gif)
 
-quiz_bro_bot is a Telegram quiz bot that provides an interactive quiz experience by retrieving random questions from the OpenTriviaDatabase. The bot offers a wide range of categories for users to choose from, making it an engaging platform for testing their knowledge and having fun.
+Telegram Quiz Bot is a Telegram quiz bot that provides an interactive quiz experience by retrieving random questions from the OpenTriviaDatabase. The bot offers a wide range of categories for users to choose from, making it an engaging platform for testing their knowledge and having fun.
 
 ## Bot Commands
 
-- **/start**: Initializes the bot and sets up all the necessary values to begin using quiz_bro_bot.
+- **/start**: Initializes the bot and sets up all the necessary values to begin using Telegram Quiz Bot.
 - **/quiz**: Generates a quiz based on the chosen categories. Users can select their preferred categories and answer a series of random questions.
 - **/settings**: Opens an inline menu where users can choose their preferred categories for the quiz. This allows users to customize their quiz experience according to their interests.
 - **/stat**: Displays the bot's statistics based on the quizzes replied to by users. Users can view their performance, such as the number of correct and incorrect answers.
@@ -48,6 +48,6 @@ Alternatively, you can directly set the BOT_TOKEN in the source code of your src
 
 ## License
 
-quiz_bro_bot is released under the [MIT License](https://github.com/yourusername/quiz_bro_bot/blob/main/LICENSE).
+Telegram Quiz Bot is released under the [MIT License](https://github.com/yourusername/quiz_bro_bot/blob/main/LICENSE).
 
 Enjoy your quiz experience with Telegram Quiz Bot!
