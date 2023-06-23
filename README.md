@@ -21,9 +21,9 @@ To run the bot, you need to set up your Telegram bot token. There are two option
 ### Option 1: Setting in the .env File
 - Create a new file named .env in the root directory of your project.
 - Add the following line to the .env file:
-
+```bash
   BOT_TOKEN=your_bot_token_here
-
+```
 - Replace your_bot_token_here with the actual token for your Telegram bot.
 
 ### Option 2: Setting in the Source Code
@@ -31,9 +31,9 @@ Alternatively, you can directly set the BOT_TOKEN in the source code of your src
 
 - Locate the src/index.ts file.
 - Find the line that initializes the bot:
-
+```ts
   const bot = new Bot<MyContext>(BOT_TOKEN);
-  
+```
 - Replace BOT_TOKEN with your actual bot token.
 
 ## Installation and Usage
