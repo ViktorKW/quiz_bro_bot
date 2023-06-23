@@ -1,4 +1,4 @@
-# Telegram Quiz Bot (not hosted... yet)
+# Telegram Quiz Bot ### (not hosted... yet)
 !["Show case gif"](./assets/showcase.gif)
 
 Telegram Quiz Bot is a Telegram quiz bot that provides an interactive quiz experience by retrieving questions from the OpenTriviaDatabase. The bot offers a wide range of categories for users to choose from.
