@@ -44,8 +44,8 @@ Alternatively, you can directly set the BOT_TOKEN in the source code of your src
 2. Install the required dependencies using `npm install`.
 3. Set up a Telegram bot and obtain the bot token.
 4. Configure the bot token in the project (use the solution described above)
-5. Run the bot using `npm start` or your preferred method.
-6. Start interacting with the bot by sending commands in your Telegram chat.
+5. Run the bot using `npm run dev`.
+6. Start quizzing through 🏄‍♂️
 
 ## License
 
