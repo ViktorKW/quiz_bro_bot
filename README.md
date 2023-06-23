@@ -9,13 +9,6 @@ quiz_bro_bot is a Telegram quiz bot that provides an interactive quiz experience
 - **/settings**: Opens an inline menu where users can choose their preferred categories for the quiz. This allows users to customize their quiz experience according to their interests.
 - **/stat**: Displays the bot's statistics based on the quizzes replied to by users. Users can view their performance, such as the number of correct and incorrect answers.
 
-## How it works
-
-- When the bot is started using the `/start` command, it initializes all the required values and sets up the necessary configurations.
-- Users can then use the `/quiz` command to generate a quiz. The bot retrieves random questions from the OpenTriviaDatabase based on the chosen categories.
-- The `/settings` command provides users with an inline menu where they can choose their preferred categories for the quiz. This allows users to tailor the quiz to their interests.
-- After answering the questions in the quiz, users can view their performance statistics using the `/stat` command. The bot provides insights into the number of correct and incorrect answers, allowing users to track their progress.
-
 ## Technologies Used
 
 - Node.js
